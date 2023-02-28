@@ -32,4 +32,27 @@ async function signup(req, res) {
     .json({ user: user, message: "User created successfully " });
 }
 
-module.exports = { signup };
+async function login(req, res) {
+  const { email, password } = req.body;
+  let existingUser;
+  try {
+    existingUser = await User.findOne({ email });
+    if (!existingUser)
+      return res.status(400).json({ message: "User not exist" });
+    const isPassword = bcrypt.compareSync(password, existingUser.password);
+    if (!isPassword)
+      return res.status(404).json({ message: "Email or password is invalid" });
+    const token = jwt.sign(
+      { email: existingUser.email, id: existingUser._id },
+      "here is secret"
+    );
+    return res
+      .status(200)
+      .json({ message: "Login Successfully..", token: token });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ message: "Internal Server Error" });
+  }
+}
+
+module.exports = { signup, login };
