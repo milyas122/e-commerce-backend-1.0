@@ -18,4 +18,14 @@ async function getUser(req, res) {
     return res.status(500).json({ message: "Error Occurred" });
   }
 }
+
+async function updateProfile(req, res) {
+  // get user id from req
+  const { name, address, city, phone, country, image } = req.body;
+  try {
+  } catch (e) {
+    return res.status(500).json({ message: "Error Occurred" });
+  }
+}
+
 module.exports = { getAllUsers, getUser };
