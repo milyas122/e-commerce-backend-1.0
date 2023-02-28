@@ -6,6 +6,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     unique: true,
   },
+  password: String,
   isSeller: {
     type: Boolean,
     default: false,
