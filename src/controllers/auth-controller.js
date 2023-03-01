@@ -37,8 +37,9 @@ async function login(req, res) {
     existingUser = await User.findOne({ email });
     if (!existingUser)
       return res.status(400).json({ message: "User not exist" });
-    const isPassword = bcrypt.compareSync(password, existingUser.password);
-    if (!isPassword)
+
+    const isMatched = await existingUser.comparePassword(password);
+    if (!isMatched)
       return res.status(404).json({ message: "Email or password is invalid" });
 
     const token = existingUser.generateToken();
