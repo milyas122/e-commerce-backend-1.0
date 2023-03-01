@@ -40,10 +40,8 @@ async function login(req, res) {
     const isPassword = bcrypt.compareSync(password, existingUser.password);
     if (!isPassword)
       return res.status(404).json({ message: "Email or password is invalid" });
-    const token = jwt.sign(
-      { email: existingUser.email, id: existingUser._id },
-      "here is secret"
-    );
+
+    const token = existingUser.generateToken();
     return res
       .status(200)
       .json({ message: "Login Successfully..", token: token });
