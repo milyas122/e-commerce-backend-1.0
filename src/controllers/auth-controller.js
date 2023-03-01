@@ -12,13 +12,11 @@ async function signup(req, res) {
     existingUser = await User.findOne({ email });
     if (existingUser)
       return res.status(400).json({ message: "Email is already exist " });
-    const salt = bcrypt.genSaltSync(10);
-    const hashPassword = bcrypt.hashSync(password, salt);
     const user_obj = new User({
       name,
       email,
-      password: hashPassword,
       country,
+      password,
       image,
       isSeller,
     });
