@@ -1,5 +1,16 @@
 const Product = require("../models/Product");
 
+// GET: products/
+async function getAllProducts(req, res) {
+  // Pagination will be implemented later
+  try {
+    const products = await Product.find();
+    return res.status(200).json({ products, message: "Success" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Unable to get product detail" });
+  }
+}
 // POST: products/add
 async function addProduct(req, res) {
   try {
@@ -54,6 +65,4 @@ async function updateProduct(req, res) {
   }
 }
 
-// Get All Products
-
-module.exports = { addProduct, getProduct, updateProduct };
+module.exports = { addProduct, getProduct, updateProduct, getAllProducts };
