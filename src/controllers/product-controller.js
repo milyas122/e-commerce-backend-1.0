@@ -1,9 +1,6 @@
 const Product = require("../models/Product");
 
 async function addProduct(req, res) {
-  let body = req.body;
-
-  body["seller"] = req.user.id;
   try {
     const product = new Product({ ...req.body });
     product.save();
