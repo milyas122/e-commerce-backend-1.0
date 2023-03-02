@@ -9,9 +9,22 @@ async function addProductToFavorite(req, res) {
 
   try {
     const product = await Product.findById({ _id: productId }, "_id").lean();
+
     if (!product)
       return res.status(400).json({ message: "Product is invalid" });
+
+    // This will make this API Idempotent(Avoid product duplication)
+    const favExist = await Favorite.findOne(
+      { productId, userId },
+      "_id"
+    ).lean();
+    if (favExist)
+      return res
+        .status(200)
+        .json({ message: "Added to favorite successfully" });
+
     await Favorite.create({ userId, productId });
+
     return res.status(200).json({ message: "Added to favorite successfully" });
   } catch (err) {
     return res.status(500).json({ message: "Error Occurred" });
