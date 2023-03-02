@@ -1,0 +1,23 @@
+const User = require("../models/User");
+const Product = require("../models/Product");
+const Favorite = require("../models/Favorite");
+
+// Add product to favorite
+async function addProductToFavorite(req, res) {
+  const productId = req.params.id;
+  const userId = req.user.id;
+
+  try {
+    const product = await Product.findById({ _id: productId }, "_id").lean();
+    if (!product)
+      return res.status(400).json({ message: "Product is invalid" });
+    await Favorite.create({ userId, productId });
+    return res.status(200).json({ message: "Added to favorite successfully" });
+  } catch (err) {
+    return res.status(500).json({ message: "Error Occurred" });
+  }
+}
+
+// remove product from favorite
+
+module.exports = { addProductToFavorite };

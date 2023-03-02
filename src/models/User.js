@@ -19,7 +19,6 @@ const userSchema = new mongoose.Schema({
   country: String,
   image: String,
   //   user cart
-  //   user favorite products
 });
 
 userSchema.pre("save", hashedPassword);

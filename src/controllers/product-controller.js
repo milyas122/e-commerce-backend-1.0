@@ -65,4 +65,6 @@ async function updateProduct(req, res) {
   }
 }
 
+// delete product
+
 module.exports = { addProduct, getProduct, updateProduct, getAllProducts };
