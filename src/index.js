@@ -1,9 +1,9 @@
 const express = require("express");
 const mongoose = require("mongoose");
-const authRoutes = require("./routes/auth-routes");
-const userRoutes = require("./routes/user-routes");
-const productRoutes = require("./routes/product-routes");
-const favoriteRoutes = require("./routes/favorite-routes");
+const authRoutes = require("./routes/auth");
+const userRoutes = require("./routes/user");
+const productRoutes = require("./routes/product");
+const favoriteRoutes = require("./routes/favorite");
 
 const app = express();
 

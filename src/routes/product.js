@@ -1,5 +1,5 @@
 const express = require("express");
-const productController = require("../controllers/product-controller");
+const productController = require("../controllers/product");
 const isAuth = require("../middleware/is-auth");
 const isSeller = require("../middleware/is-seller");
 
