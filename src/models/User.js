@@ -44,7 +44,7 @@ function hashedPassword(next) {
 userSchema.method("generateToken", function () {
   const token = jwt.sign(
     { id: this._doc._id, email: this._doc.email },
-    "Here is secret"
+    "here is secret"
   );
   return token;
 });
