@@ -31,18 +31,29 @@ async function getProduct(req, res) {
 }
 
 // PUT: products/:id
-// async function updateProduct(req, res) {
-//   const prodId = req.params.id;
-//   try {
-//     const
-//   } catch (err) {
-//     console.log(err);
-//     return res.status(500).json({ message: "Unable to update product" });
-//   }
-// }
+async function updateProduct(req, res) {
+  const prodId = req.params.id;
+  // const { title, price, stock, description, category, images } = req.body;
 
-// const { title, price, stock, description, category, images } = req.body;
+  try {
+    let sellerId = await Product.findById({ _id: prodId }, "seller").lean();
+    sellerId = sellerId.seller.toString();
+
+    if (sellerId !== req.user.id)
+      return res.status(400).json({ message: "Not allowed to updated it" });
+
+    const product = await Product.findByIdAndUpdate(prodId, { ...req.body });
+
+    if (!product)
+      return res.status(500).json({ message: "Product Id is invalid" });
+
+    return res.status(200).json({ product: product, message: "Success" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Unable to update product" });
+  }
+}
 
 // Get All Products
 
-module.exports = { addProduct, getProduct };
+module.exports = { addProduct, getProduct, updateProduct };
