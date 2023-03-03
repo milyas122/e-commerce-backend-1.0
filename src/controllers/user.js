@@ -1,4 +1,5 @@
 const User = require("../models/User");
+const Favorite = require("../models/Favorite");
 
 async function getAllUsers(req, res) {
   try {
@@ -15,7 +16,7 @@ async function getUser(req, res) {
     const user = await User.findById(user_id);
     return res.status(200).json({ user, message: "success" });
   } catch (e) {
-    return res.status(500).json({ message: "Error Occurred" });
+    return res.status(500).json({ message: "Error Occurred " });
   }
 }
 
@@ -42,4 +43,21 @@ async function updateProfile(req, res) {
   }
 }
 
-module.exports = { getAllUsers, getUser, updateProfile };
+async function favoriteProducts(req, res) {
+  const userId = req.user.id;
+  try {
+    const products = await Favorite.find({ userId }, "productId -_id").populate(
+      "productId"
+    );
+    const favoriteProducts = products.map((p) => {
+      return p.productId;
+    });
+
+    return res.status(200).json({ favoriteProducts });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Error Occurred" });
+  }
+}
+
+module.exports = { getAllUsers, getUser, updateProfile, favoriteProducts };
