@@ -4,6 +4,7 @@ const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const productRoutes = require("./routes/product");
 const favoriteRoutes = require("./routes/favorite");
+const cartRoutes = require("./routes/cart");
 
 const app = express();
 
@@ -15,6 +16,7 @@ app.use("/api/auth", authRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/favorite", favoriteRoutes);
+app.use("/api/cart", cartRoutes);
 
 // Db connect
 mongoose
