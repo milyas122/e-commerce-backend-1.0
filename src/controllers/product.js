@@ -2,13 +2,19 @@ const Product = require("../models/Product");
 
 // GET: products/
 async function getAllProducts(req, res) {
-  const { page = 1 } = req.query;
+  const { page = 1, category } = req.query;
   const limit = 2;
+  let products;
   try {
-    const products = await Product.find()
-      .limit(limit * 1)
-      .skip((page - 1) * limit);
-
+    if (category) {
+      products = await Product.find({ category })
+        .limit(limit * 1)
+        .skip((page - 1) * limit);
+    } else {
+      products = await Product.find()
+        .limit(limit * 1)
+        .skip((page - 1) * limit);
+    }
     // get total documents in the Products collection
     const count = await Product.countDocuments();
 
