@@ -2,10 +2,22 @@ const Product = require("../models/Product");
 
 // GET: products/
 async function getAllProducts(req, res) {
-  // Pagination will be implemented later
+  const { page = 1 } = req.query;
+  const limit = 2;
   try {
-    const products = await Product.find();
-    return res.status(200).json({ products, message: "Success" });
+    const products = await Product.find()
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+
+    // get total documents in the Products collection
+    const count = await Product.countDocuments();
+
+    return res.status(200).json({
+      message: "Success",
+      products,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+    });
   } catch (err) {
     console.log(err);
     return res.status(500).json({ message: "Unable to get product detail" });
