@@ -1,6 +1,7 @@
 const Product = require("../models/Product");
 const Cart = require("../models/Cart");
 
+//POST: /cart/add/:id
 async function addToCart(req, res) {
   const productId = req.params.id;
   const userId = req.user.id;
@@ -28,6 +29,22 @@ async function addToCart(req, res) {
   }
 }
 
-// Update Cart
+//GET: /cart/remove/:id
+async function removeFromCart(req, res) {
+  const cartId = req.params.id;
 
-module.exports = { addToCart };
+  try {
+    const cartItem = await Cart.findById(cartId, "_id");
+    if (!cartItem) {
+      return res.status(400).json({ message: "Cart does not exist" });
+    }
+    await Cart.findByIdAndDelete({ _id: cartId });
+    return res.status(200).json({ message: "Success" });
+  } catch (err) {
+    console.log(err);
+    return res.status(500).json({ message: "Error Occurred" });
+  }
+}
+
+// Remove whole user cart
+module.exports = { addToCart, removeFromCart };
