@@ -2,9 +2,21 @@ const User = require("../models/User");
 const Favorite = require("../models/Favorite");
 
 async function getAllUsers(req, res) {
+  const { page = 1 } = req.query;
+  const limit = 2;
   try {
-    const users = await User.find();
-    return res.status(200).json({ users, message: "success" });
+    const users = await User.find()
+      .limit(limit * 1)
+      .skip((page - 1) * limit);
+    const count = await User.countDocuments();
+    return res
+      .status(200)
+      .json({
+        message: "Success",
+        users,
+        totalPages: Math.ceil(count / limit),
+        currentPage: page,
+      });
   } catch (e) {
     return res.status(500).json({ message: "Error Occurred" });
   }
