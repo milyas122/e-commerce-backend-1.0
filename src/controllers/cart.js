@@ -46,5 +46,17 @@ async function removeFromCart(req, res) {
   }
 }
 
+async function deleteCart(req, res) {
+  userId = req.user.id;
+  try {
+    const deleteCount = await Cart.deleteMany({ userId });
+    return res
+      .status(200)
+      .json({ deleteCount, message: "Deleted Successfully" });
+  } catch (err) {
+    return res.status(500).json({ message: "Error Occurred" });
+  }
+}
+
 // Remove whole user cart
-module.exports = { addToCart, removeFromCart };
+module.exports = { addToCart, removeFromCart, deleteCart };
