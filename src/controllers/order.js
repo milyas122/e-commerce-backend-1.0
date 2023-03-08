@@ -25,7 +25,11 @@ async function placeOrder(req, res) {
       return orderCart;
     });
     // Implement a transaction here
-    const placeOrder = await Order.create({ total, orderDetail: userCart });
+    const placeOrder = await Order.create({
+      userId: req.user.id,
+      total,
+      orderDetail: userCart,
+    });
 
     await Cart.deleteMany({ _id: { $in: cartIdList } });
 
@@ -35,4 +39,5 @@ async function placeOrder(req, res) {
     return res.status(500).json({ message: "Error Occurred" });
   }
 }
+
 module.exports = { placeOrder };
