@@ -5,6 +5,7 @@ const orderDetailSchema = new mongoose.Schema({
   title: String,
   description: String,
   category: String,
+  price: Number,
   images: [{ type: String }],
   quantity: { type: Number, require: true },
   total: { type: Number, require: true },
