@@ -17,6 +17,7 @@ const orderSchema = new mongoose.Schema(
       type: mongoose.Types.ObjectId,
       ref: "User",
       require: true,
+      select: false,
     },
     orderDetail: {
       type: [orderDetailSchema],
