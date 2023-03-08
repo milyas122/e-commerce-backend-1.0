@@ -1,6 +1,20 @@
 const Cart = require("../models/Cart");
 const Order = require("../models/Order");
 
+// GET: /orders
+async function getUserOrders(req, res) {
+  const userId = req.user.id;
+
+  try {
+    const orders = await Order.find({ userId });
+    return res.status(200).json({ orders, message: "Success" });
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({ message: "Error Occurred" });
+  }
+}
+
+// POST: /orders/place
 async function placeOrder(req, res) {
   const { cartIdList } = req.body;
   let orderCart,
@@ -40,4 +54,4 @@ async function placeOrder(req, res) {
   }
 }
 
-module.exports = { placeOrder };
+module.exports = { placeOrder, getUserOrders };
