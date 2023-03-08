@@ -11,20 +11,20 @@ const orderDetailSchema = new mongoose.Schema({
   total: { type: Number, require: true },
 });
 
-const orderSchema = new mongoose.Schema({
-  userId: {
-    type: mongoose.Types.ObjectId,
-    ref: "User",
-    require: true,
-  },
-  timestamps: true,
-  orderDetail: [
-    {
-      type: orderDetailSchema,
+const orderSchema = new mongoose.Schema(
+  {
+    userId: {
+      type: mongoose.Types.ObjectId,
+      ref: "User",
+      require: true,
     },
-  ],
-  total: { type: Number, require: true },
-});
+    orderDetail: {
+      type: [orderDetailSchema],
+    },
+    total: { type: Number, require: true },
+  },
+  { timestamps: true }
+);
 
-Order = mongoose.Model("Order", orderSchema);
+const Order = mongoose.model("Order", orderSchema);
 module.exports = Order;
