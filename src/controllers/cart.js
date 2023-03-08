@@ -46,6 +46,7 @@ async function removeFromCart(req, res) {
   }
 }
 
+//DELETE: /cart/delete
 async function deleteCart(req, res) {
   userId = req.user.id;
   try {
@@ -58,5 +59,19 @@ async function deleteCart(req, res) {
   }
 }
 
-// Remove whole user cart
-module.exports = { addToCart, removeFromCart, deleteCart };
+// GET: /cart
+async function getUserCart(req, res) {
+  try {
+    const userId = req.user.id;
+    const cart = await Cart.find({ userId }, "-userId").populate({
+      path: "productId",
+      select: "-__v",
+    });
+    return res.status(200).json({ cart, message: "Success" });
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({ message: "Error Occurred" });
+  }
+}
+
+module.exports = { addToCart, removeFromCart, deleteCart, getUserCart };
