@@ -1,26 +1,21 @@
 const User = require("../models/User");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
+const { signupSchema } = require("../utils/validations/auth");
+const validate = require("../utils/validate");
 
+//POST: /auth/signup
 async function signup(req, res) {
-  const { name, email, password, confirmPassword, country, image, isSeller } =
-    req.body;
   let existingUser;
   let user;
 
   try {
-    existingUser = await User.findOne({ email });
+    const cleanFields = await validate(signupSchema, req.body);
+    delete cleanFields.confirmPassword;
+
+    existingUser = await User.findOne({ email: cleanFields.email });
     if (existingUser)
       return res.status(400).json({ message: "Email is already exist " });
-    const user_obj = new User({
-      name,
-      email,
-      country,
-      password,
-      image,
-      isSeller,
-    });
-    user = await user_obj.save();
+    const userObj = new User({ ...cleanFields });
+    user = await userObj.save();
   } catch (e) {
     console.log(e);
     return res.status(500).json({ message: e });
