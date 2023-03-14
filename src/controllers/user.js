@@ -37,7 +37,7 @@ async function updateProfile(req, res) {
 
   try {
     const cleanFields = await validate(updateProfileSchema, req.body);
-    console.log(cleanFields);
+
     const user = await User.findByIdAndUpdate(user_id, {
       ...cleanFields,
     });
