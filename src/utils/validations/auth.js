@@ -21,4 +21,9 @@ const signupSchema = object({
   isSeller: boolean().default(false),
 });
 
-module.exports = { signupSchema };
+const loginSchema = object({
+  email: string().email().required(),
+  password: string().required(),
+});
+
+module.exports = { signupSchema, loginSchema };

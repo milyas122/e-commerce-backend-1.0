@@ -1,5 +1,5 @@
 const User = require("../models/User");
-const { signupSchema } = require("../utils/validations/auth");
+const { signupSchema, loginSchema } = require("../utils/validations/auth");
 const validate = require("../utils/validate");
 
 //POST: /auth/signup
@@ -16,24 +16,28 @@ async function signup(req, res) {
       return res.status(400).json({ message: "Email is already exist " });
     const userObj = new User({ ...cleanFields });
     user = await userObj.save();
+    return res
+      .status(201)
+      .json({ user: user, message: "User created successfully " });
   } catch (e) {
-    console.log(e);
-    return res.status(500).json({ message: e });
+    if (e.name === "ValidationError") {
+      return res.status(422).json({ message: e.message });
+    }
+    return res.status(500).json({ message: "Internal Server Error" });
   }
-  return res
-    .status(201)
-    .json({ user: user, message: "User created successfully " });
 }
 
+//POST: /auth/login
 async function login(req, res) {
-  const { email, password } = req.body;
   let existingUser;
   try {
-    existingUser = await User.findOne({ email });
+    const cleanFields = await validate(loginSchema, req.body);
+    existingUser = await User.findOne({ email: cleanFields.email });
+
     if (!existingUser)
       return res.status(400).json({ message: "User not exist" });
 
-    const isMatched = await existingUser.comparePassword(password);
+    const isMatched = await existingUser.comparePassword(cleanFields.password);
     if (!isMatched)
       return res.status(404).json({ message: "Email or password is invalid" });
 
@@ -42,7 +46,9 @@ async function login(req, res) {
       .status(200)
       .json({ message: "Login Successfully..", token: token });
   } catch (e) {
-    console.log(e);
+    if (e.name === "ValidationError") {
+      return res.status(422).json({ message: e.message });
+    }
     return res.status(500).json({ message: "Internal Server Error" });
   }
 }
