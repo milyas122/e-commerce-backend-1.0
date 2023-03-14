@@ -1,5 +1,7 @@
 const Cart = require("../models/Cart");
 const Order = require("../models/Order");
+const { placeOrderSchema } = require("../utils/validations/order");
+const validate = require("../utils/validate");
 
 // GET: /orders
 async function getUserOrders(req, res) {
@@ -16,11 +18,12 @@ async function getUserOrders(req, res) {
 
 // POST: /orders/place
 async function placeOrder(req, res) {
-  const { cartIdList } = req.body;
   let orderCart,
     price,
     total = 0;
   try {
+    const { cartIdList } = await validate(placeOrderSchema, req.body);
+    console.log(cartIdList);
     let userCart = await Cart.find(
       { _id: { $in: cartIdList } },
       "productId, quantity -_id"
@@ -50,7 +53,8 @@ async function placeOrder(req, res) {
     return res.status(500).json({ placeOrder, message: "Success" });
   } catch (err) {
     console.log(err);
-    return res.status(500).json({ message: "Error Occurred" });
+    const message = err.message || "Internal Server Error";
+    return res.status(500).json({ message });
   }
 }
 
