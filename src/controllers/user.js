@@ -1,5 +1,7 @@
 const User = require("../models/User");
 const Favorite = require("../models/Favorite");
+const { updateProfileSchema } = require("../utils/validations/user");
+const validate = require("../utils/validate");
 
 async function getAllUsers(req, res) {
   const { page = 1 } = req.query;
@@ -9,14 +11,12 @@ async function getAllUsers(req, res) {
       .limit(limit * 1)
       .skip((page - 1) * limit);
     const count = await User.countDocuments();
-    return res
-      .status(200)
-      .json({
-        message: "Success",
-        users,
-        totalPages: Math.ceil(count / limit),
-        currentPage: page,
-      });
+    return res.status(200).json({
+      message: "Success",
+      users,
+      totalPages: Math.ceil(count / limit),
+      currentPage: page,
+    });
   } catch (e) {
     return res.status(500).json({ message: "Error Occurred" });
   }
@@ -33,17 +33,13 @@ async function getUser(req, res) {
 }
 
 async function updateProfile(req, res) {
-  const { name, address, city, phone, country, image } = req.body;
   const user_id = req.params.id;
 
   try {
+    const cleanFields = await validate(updateProfileSchema, req.body);
+    console.log(cleanFields);
     const user = await User.findByIdAndUpdate(user_id, {
-      name,
-      address,
-      city,
-      phone,
-      country,
-      image,
+      ...cleanFields,
     });
 
     if (!user)
@@ -51,7 +47,8 @@ async function updateProfile(req, res) {
 
     return res.status(200).json({ user: user, message: "Updated" });
   } catch (e) {
-    return res.status(500).json({ message: "Error Occurred" });
+    const message = e.message || "Internal Server Error";
+    return res.status(500).json({ message });
   }
 }
 
