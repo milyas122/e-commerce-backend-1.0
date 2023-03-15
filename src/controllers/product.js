@@ -1,5 +1,8 @@
 const Product = require("../models/Product");
-const { addProductSchema } = require("../utils/validations/product");
+const {
+  addProductSchema,
+  updateProductSchema,
+} = require("../utils/validations/product");
 const validate = require("../utils/validate");
 
 // GET: products/
@@ -65,7 +68,6 @@ async function getProduct(req, res) {
 // PUT: products/:id
 async function updateProduct(req, res) {
   const prodId = req.params.id;
-  // const { title, price, stock, description, category, images } = req.body;
 
   try {
     let sellerId = await Product.findById({ _id: prodId }, "seller").lean();
@@ -73,16 +75,16 @@ async function updateProduct(req, res) {
 
     if (sellerId !== req.user.id)
       return res.status(400).json({ message: "Not allowed to updated it" });
-
-    const product = await Product.findByIdAndUpdate(prodId, { ...req.body });
+    const cleanFields = await validate(updateProductSchema, req.body);
+    const product = await Product.findByIdAndUpdate(prodId, { ...cleanFields });
 
     if (!product)
       return res.status(500).json({ message: "Product Id is invalid" });
 
     return res.status(200).json({ product: product, message: "Success" });
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "Unable to update product" });
+    const message = err.message || "Unable to update product";
+    return res.status(500).json({ message });
   }
 }
 
