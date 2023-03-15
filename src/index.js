@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const config = require("config");
 const authRoutes = require("./routes/auth");
 const userRoutes = require("./routes/user");
 const productRoutes = require("./routes/product");
@@ -8,6 +9,8 @@ const cartRoutes = require("./routes/cart");
 const orderRoute = require("./routes/order");
 
 const app = express();
+const port = config.get("PORT");
+const dbURI = config.get("DB_URI");
 
 //Middleware
 app.use(express.json());
@@ -22,12 +25,10 @@ app.use("/api/orders", orderRoute);
 
 // Db connect
 mongoose
-  .connect(
-    "mongodb+srv://muhammadilyas:523221ali@nodejs-cluster.iu8pnvx.mongodb.net/e-commerce?retryWrites=true&w=majority"
-  )
+  .connect(dbURI)
   .then(() => {
     console.log("DB Connected");
-    app.listen(8000);
+    app.listen(port);
   })
   .catch((err) => {
     console.log(err);

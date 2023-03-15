@@ -1,0 +1,4 @@
+{
+  "PORT": 8000,
+  "DB_URI": "mongodb+srv://muhammadilyas:523221ali@nodejs-cluster.iu8pnvx.mongodb.net/e-commerce?retryWrites=true&w=majority"
+}
