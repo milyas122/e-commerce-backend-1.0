@@ -1,4 +1,6 @@
 const Product = require("../models/Product");
+const { addProductSchema } = require("../utils/validations/product");
+const validate = require("../utils/validate");
 
 // GET: products/
 async function getAllProducts(req, res) {
@@ -32,14 +34,15 @@ async function getAllProducts(req, res) {
 // POST: products/add
 async function addProduct(req, res) {
   try {
-    const product = new Product({ ...req.body });
+    const cleanFields = await validate(addProductSchema, req.body);
+    const product = new Product({ ...cleanFields });
     product.save();
     return res
       .status(201)
       .json({ product: product, message: "Added Successfully" });
   } catch (err) {
-    console.log(err);
-    return res.status(500).json({ message: "Unable to add product" });
+    const message = err.message || "Unable to add product";
+    return res.status(500).json({ message });
   }
 }
 
